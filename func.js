@@ -16,7 +16,7 @@ function lonlatToCoords(lat, lon, layer){
   var tileSize = layer.getTileSize();
   var z = dataLayer._tileZoom;	//ズームレベル
   var tlOneSide = 2 ** z; //一辺のタイル分割数
-  var tlOneSideSize = 240 / tlOneSide; //一辺のタイルスケール
+  var tlOneSideSize = tileSize / tlOneSide; //一辺のタイルスケール
   //coords計算
   clCoords.x = lon > 0 ? parseInt( lon / tlOneSideSize) : parseInt( lon / tlOneSideSize - 1);
   clCoords.y = lat > 0 ? parseInt(-lat / tlOneSideSize -1 ) : parseInt(-lat / tlOneSideSize);
