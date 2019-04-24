@@ -9,11 +9,11 @@ function createColormap(viewLayer){
     viewLayer.max = tmp_max;
   }
 }
-/*緯度経度をZ-X-Yに変換する
-引数(latitude :　緯度, longitude : 経度)  戻り値 引数のcoords*/
-function lonlatToCoords(lat, lon){
+/*指定したレイヤの緯度経度をZ-X-Yに変換する
+引数(latitude[緯度], longitude[経度], gridlayerのインスタンス)  戻り値 引数のcoords*/
+function lonlatToCoords(lat, lon, layer){
   var clCoords  = new L.Point(0, 0); //クリックされた場所のタイルcoords(z/x/y)
-  var tileSize = 240;
+  var tileSize = layer.getTileSize();
   var z = dataLayer._tileZoom;	//ズームレベル
   var tlOneSide = 2 ** z; //一辺のタイル分割数
   var tlOneSideSize = 240 / tlOneSide; //一辺のタイルスケール
@@ -24,10 +24,10 @@ function lonlatToCoords(lat, lon){
   return clCoords;
 }
 /*緯度経度をタイル内座標に変換する
-引数(latitude :　緯度, longitude : 経度)  戻り値 タイル内座標*/
-function lonlatToTlPoint(lat, lon){
+引数(latitude[緯度], longitude[経度], gridlayerのインスタンス)  戻り値 タイル内座標*/
+function lonlatToTlPoint(lat, lon, layer){
   var clTlPoint = new L.Point(0, 0); //CrickTilePoint : クリックされた場所のタイル内座標
-  var tileSize = 240;
+  var tileSize = layer.getTileSize();
   var z = dataLayer._tileZoom;	//ズームレベル
   var tlOneSide = 2 ** z; //一辺のタイル分割数
   //ClockTilePoint計算

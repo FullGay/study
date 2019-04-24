@@ -41,8 +41,8 @@ drawText(viewLayer);
 /*イベント*/
 /*クリック時　対象ピクセルの値を表示*/
 map.on('click', function(e){
-  var coords = lonlatToCoords(e.latlng.lat, e.latlng.lng);
-  var point  = lonlatToTlPoint(e.latlng.lat, e.latlng.lng);
+  var coords = lonlatToCoords(e.latlng.lat, e.latlng.lng, dataLayer);
+  var point  = lonlatToTlPoint(e.latlng.lat, e.latlng.lng, dataLayer);
   var canvasElement = dataLayer.getCanvasElement( coords );
   var canvasElement_view = viewLayer.getCanvasElement( coords );
   var pixelData = getPixelData( canvasElement, point );
