@@ -1,4 +1,8 @@
 L.GridLayer.Data = L.GridLayer.extend({
+  initialize: function(url, options){
+    this._url = url;
+    L.Util.setOptions(this, options);
+  },
   /*タイル生成*/
   createTile: function (coords) {
     var tileSize = this.getTileSize();
@@ -11,7 +15,10 @@ L.GridLayer.Data = L.GridLayer.extend({
 
     /*canvasインスタンスにベースタイル描画*/
     var img = new Image();
-    img.src = `dataTile/${coords.z}/${coords.x}/${coords.y}.png`;
+
+    //img.src = `dataTile/${coords.z}/${coords.x}/${coords.y}.png`;
+    img.src = `${this._url}${coords.z}/${coords.x}/${coords.y}.png`;
+
     ctx.drawImage(img, 0, 0);//canvasオブジェクトの左上から画像を貼り付け
 
     /*ベースタイルの色取得*/
@@ -30,14 +37,16 @@ L.GridLayer.Data = L.GridLayer.extend({
   /*引数 : coords , 戻り値 : canvasオブジェクト*/
   getCanvasElement: function(coords){
     var key = this._tileCoordsToKey(coords);
+    //console.log("coords : "+coords);
+    //console.log("key : "+key);
     try{
       return this._tiles[key].el;
     }catch(e){
-      console.log("key : "+key);
+      //console.log("key : "+key);
     }
   }
 });
 
-L.gridLayer.data = function(opts) {
-  return new L.GridLayer.Data(opts);
+L.gridLayer.data = function(url, opts) {
+  return new L.GridLayer.Data(url, opts);
 };

@@ -15,7 +15,7 @@ var map = L.map('map',{
   zoom: 0,
 });
 /*データタイル、ビュータイルのインスタンス生成*/
-var dataLayer = L.gridLayer.data({
+var dataLayer = L.gridLayer.data('dataTile/U/',{
   tileSize : new L.Point(240, 240)
 });
 var viewLayer = L.gridLayer.view({
@@ -42,6 +42,8 @@ drawText(viewLayer);
 /*クリック時　対象ピクセルの値を表示*/
 map.on('click', function(e){
   var coords = lonlatToCoords(e.latlng.lat, e.latlng.lng, dataLayer);
+  //var coords  = new L.Point(tmp.x, tmp.y);
+  //coords.z = tmp.z;
   var point  = lonlatToTlPoint(e.latlng.lat, e.latlng.lng, dataLayer);
   var canvasElement = dataLayer.getCanvasElement( coords );
   var canvasElement_view = viewLayer.getCanvasElement( coords );

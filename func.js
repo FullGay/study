@@ -14,12 +14,13 @@ function createColormap(viewLayer){
 function lonlatToCoords(lat, lon, layer){
   var clCoords  = new L.Point(0, 0); //クリックされた場所のタイルcoords(z/x/y)
   var tileSize = layer.getTileSize();
-  var z = dataLayer._tileZoom;	//ズームレベル
+  var z = layer._tileZoom;	//ズームレベル
   var tlOneSide = 2 ** z; //一辺のタイル分割数
-  var tlOneSideSize = tileSize / tlOneSide; //一辺のタイルスケール
+  var tlOneSideSize = {x: tileSize.x / tlOneSide,
+                       y: tileSize.y / tlOneSide}; //一辺のタイルスケール
   //coords計算
-  clCoords.x = lon > 0 ? parseInt( lon / tlOneSideSize) : parseInt( lon / tlOneSideSize - 1);
-  clCoords.y = lat > 0 ? parseInt(-lat / tlOneSideSize -1 ) : parseInt(-lat / tlOneSideSize);
+  clCoords.x = lon > 0 ? parseInt( lon / tlOneSideSize.x) : parseInt( lon / tlOneSideSize.x - 1);
+  clCoords.y = lat > 0 ? parseInt(-lat / tlOneSideSize.y -1 ) : parseInt(-lat / tlOneSideSize.y);
   clCoords.z = z;
   return clCoords;
 }
@@ -31,8 +32,9 @@ function lonlatToTlPoint(lat, lon, layer){
   var z = dataLayer._tileZoom;	//ズームレベル
   var tlOneSide = 2 ** z; //一辺のタイル分割数
   //ClockTilePoint計算
-  clTlPoint.x = lon < 0 ? (       lon  * tlOneSide % tileSize + tileSize) % tileSize :  lon * tlOneSide % tileSize;
-  clTlPoint.y = lat > 0 ? ((tileSize - lat) * tlOneSide % tileSize + tileSize) % tileSize : -lat * tlOneSide % tileSize;
+  clTlPoint.x = lon < 0 ? (       lon  * tlOneSide % tileSize.x + tileSize.x) % tileSize.x :  lon * tlOneSide % tileSize.x;
+  console.log();
+  clTlPoint.y = lat > 0 ? ((tileSize.y - lat) * tlOneSide % tileSize.y + tileSize.y) % tileSize.y : -lat * tlOneSide % tileSize.y;
   return clTlPoint;
 }
 /*指定したピクセルにおけるfloat値を返す
@@ -64,4 +66,5 @@ function drawText(viewLayer){
   var ctx_text = canvas.getContext('2d');
   ctx_text.font = "bold 20px 'Arial'";
   ctx_text.fillText("ColorRange:["+viewLayer.min+", "+viewLayer.max+"]",10, window.innerHeight-30);
+
 }
