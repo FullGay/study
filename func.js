@@ -29,11 +29,10 @@ function lonlatToCoords(lat, lon, layer){
 function lonlatToTlPoint(lat, lon, layer){
   var clTlPoint = new L.Point(0, 0); //CrickTilePoint : クリックされた場所のタイル内座標
   var tileSize = layer.getTileSize();
-  var z = dataLayer._tileZoom;	//ズームレベル
+  var z =layer._tileZoom;	//ズームレベル
   var tlOneSide = 2 ** z; //一辺のタイル分割数
   //ClockTilePoint計算
   clTlPoint.x = lon < 0 ? (       lon  * tlOneSide % tileSize.x + tileSize.x) % tileSize.x :  lon * tlOneSide % tileSize.x;
-  console.log();
   clTlPoint.y = lat > 0 ? ((tileSize.y - lat) * tlOneSide % tileSize.y + tileSize.y) % tileSize.y : -lat * tlOneSide % tileSize.y;
   return clTlPoint;
 }
