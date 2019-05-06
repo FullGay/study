@@ -18,10 +18,21 @@ var map = L.map('map',{
 var dataLayer = L.gridLayer.data('dataTile/U/',{
   tileSize : new L.Point(240, 240)
 });
+
+var dataLayer_PT = L.gridLayer.data('dataTile/PT/',{
+  tileSize : new L.Point(240, 240)
+});
+
 var viewLayer = L.gridLayer.view({
   tileSize : new L.Point(240, 240),
   dtLayerObj : dataLayer,
   isGrid : false
+});
+
+var viewLayer_PT = L.gridLayer.view({
+  tileSize : new L.Point(240, 240),
+  dtLayerObj : dataLayer_PT,
+  isGrid : true
 });
 /*クロスヘアインスタンス生成*/
 var cross = L.crosshairs({
@@ -33,20 +44,20 @@ var cross = L.crosshairs({
     radius: 15
   }
 });
-map.addLayer( dataLayer );//addLayerしないとtiles[]が生成されない
-map.addLayer( viewLayer );
+map.addLayer( dataLayer_PT );//addLayerしないとtiles[]が生成されない
+map.addLayer( viewLayer_PT );
 cross.addTo(map);
-drawText(viewLayer);
+drawText(viewLayer_PT);
 
 /*イベント*/
 /*クリック時　対象ピクセルの値を表示*/
 map.on('click', function(e){
-  var coords = lonlatToCoords(e.latlng.lat, e.latlng.lng, dataLayer);
+  var coords = lonlatToCoords(e.latlng.lat, e.latlng.lng, dataLayer_PT);
   //var coords  = new L.Point(tmp.x, tmp.y);
   //coords.z = tmp.z;
-  var point  = lonlatToTlPoint(e.latlng.lat, e.latlng.lng, dataLayer);
-  var canvasElement = dataLayer.getCanvasElement( coords );
-  var canvasElement_view = viewLayer.getCanvasElement( coords );
+  var point  = lonlatToTlPoint(e.latlng.lat, e.latlng.lng, dataLayer_PT);
+  var canvasElement = dataLayer_PT.getCanvasElement( coords );
+  var canvasElement_view = viewLayer_PT.getCanvasElement( coords );
   var pixelData = getPixelData( canvasElement, point );
   compRGB(canvasElement, canvasElement_view, point, e.latlng);
   console.log( pixelData.toPrecision(5) );
@@ -54,11 +65,11 @@ map.on('click', function(e){
 /*キー押下時　再描画、rキー押下時　range再定義*/
 map.on('keypress', function(e){
   if(e.originalEvent.key ==="r"){
-      createColormap(viewLayer);
+      createColormap(viewLayer_PT);
   }
-  dataLayer.redraw();
-  viewLayer.redraw();
-  drawText(viewLayer);
+  dataLayer_PT.redraw();
+  viewLayer_PT.redraw();
+  drawText(viewLayer_PT);
 });
 
 /*memo*/
