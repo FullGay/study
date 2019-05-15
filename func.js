@@ -2,8 +2,10 @@
 
 /*ユーザに最大・最小値を入力させる*/
 function createColormap(viewLayer){
-  var tmp_min = Math.floor( window.prompt('最小値') );
-  var tmp_max = Math.ceil ( window.prompt('最大値') );
+  /*var tmp_min = Math.floor( window.prompt('最小値') );
+  var tmp_max = Math.ceil ( window.prompt('最大値') );*/
+  var tmp_min = Number(window.prompt('最小値'));
+  var tmp_max = Number(window.prompt('最大値'));
   if( tmp_min < tmp_max){ //不正な値・文字列が入った場合に更新しないようにする
     viewLayer.min = tmp_min;
     viewLayer.max = tmp_max;

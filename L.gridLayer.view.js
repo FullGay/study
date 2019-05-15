@@ -55,8 +55,9 @@ L.GridLayer.View = L.GridLayer.extend({
         }
       }
     }
-    this.max = parseInt(this.max, 10);
-    this.min = parseInt(this.min, 10);
+    /*this.max = parseInt(this.max, 10);
+    this.min = parseInt(this.min, 10);*/
+
     //console.log("tmp is called");
   },
 
@@ -73,6 +74,7 @@ L.GridLayer.View = L.GridLayer.extend({
   /*引数 : ピクセル値, 戻り値 : RGBAの格納されたオブジェクト*/
   getColor: function(value) {
     var diff = (this.max - this.min) / (this._colormap.length - 2);
+
     if( value === 0.0000000000 ){     //読み込み失敗タイルは白く塗りつぶす
       return {r:255, g:255, b:255, a:  0};
     }else if(value <= this.min){           //最小値以下
@@ -86,6 +88,7 @@ L.GridLayer.View = L.GridLayer.extend({
         }
       }
     }
+    return {r:255, g:255, b:255, a:  0};
   },
 
   /*引数: coords  戻り値: タイル1つのcanvasインスタンス*/
@@ -124,8 +127,9 @@ L.GridLayer.View = L.GridLayer.extend({
         var b = dataImgData.data[imgInx + 2] <<  8;
         data_view.setUint32(0, r+g+b);
         var value = data_view.getFloat32(0);
-          //console.log(value);
+
         var color = this.getColor(value);
+
         //console.log(color);
         viewImgData.data[imgInx    ] = color.r;
         viewImgData.data[imgInx + 1] = color.g;

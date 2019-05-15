@@ -19,7 +19,19 @@ var dataLayer_U = L.gridLayer.data('dataTile/U/',{
   tileSize : new L.Point(240, 240)
 });
 
+var dataLayer_V = L.gridLayer.data('dataTile/V/',{
+  tileSize : new L.Point(240, 240)
+});
+
+var dataLayer_W = L.gridLayer.data('dataTile/W/',{
+  tileSize : new L.Point(240, 240)
+});
+
 var dataLayer_PT = L.gridLayer.data('dataTile/PT/',{
+  tileSize : new L.Point(240, 240)
+});
+
+var dataLayer_DENS = L.gridLayer.data('dataTile/DENS/',{
   tileSize : new L.Point(240, 240)
 });
 
@@ -31,6 +43,22 @@ var viewLayer_U = L.gridLayer.view({
   isGrid : true
 });
 
+var viewLayer_V = L.gridLayer.view({
+  tileSize : new L.Point(240, 240),
+  dtLayerObj : dataLayer_V,
+  clrmap : colormap.gray,
+  name: "V",
+  isGrid : true
+});
+
+var viewLayer_W = L.gridLayer.view({
+  tileSize : new L.Point(240, 240),
+  dtLayerObj : dataLayer_W,
+  clrmap : colormap.gray,
+  name: "W",
+  isGrid : true
+});
+
 var viewLayer_PT = L.gridLayer.view({
   tileSize : new L.Point(240, 240),
   dtLayerObj : dataLayer_PT,
@@ -38,6 +66,15 @@ var viewLayer_PT = L.gridLayer.view({
   name: "PT",
   isGrid : true
 });
+
+var viewLayer_DENS = L.gridLayer.view({
+  tileSize : new L.Point(240, 240),
+  dtLayerObj : dataLayer_DENS,
+  clrmap : colormap.jet,
+  name: "DENS",
+  isGrid : true
+});
+
 /*クロスヘアインスタンス生成*/
 var cross = L.crosshairs({
   style: {
@@ -49,8 +86,11 @@ var cross = L.crosshairs({
   }
 });
 
-var dataLayer = [dataLayer_U,dataLayer_PT];
-var viewLayer = [viewLayer_U,viewLayer_PT];
+var dataLayer = [dataLayer_U,dataLayer_V,dataLayer_W,dataLayer_PT,dataLayer_DENS];
+var viewLayer = [viewLayer_U,viewLayer_V,viewLayer_W,viewLayer_PT,viewLayer_DENS];
+
+var dataLayer = [dataLayer_DENS];
+var viewLayer = [viewLayer_DENS];
 if(dataLayer.length == viewLayer.length){
   var layerNum = dataLayer.length;
   var activeLayer = 0;
