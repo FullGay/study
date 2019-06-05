@@ -119,8 +119,9 @@ map.on('click', function(e){
 });
 var tmpOpacity = viewLayer_PT.options.opacity;
 var flag = 1;
-/*キー押下時　再描画、rキー押下時　range再定義*/
+/*キー押下時　諸々処理*/
 map.on('keypress', function(e){
+  /*アクティブレイヤ切り替え*/
   if(e.originalEvent.key === "d"){
       activeLayer ++;
       if( activeLayer >= layerNum ){
@@ -128,6 +129,7 @@ map.on('keypress', function(e){
       }
       viewLayer[activeLayer].bringToFront();
   }
+  /*アクティブレイヤ切り替え*/
   if(e.originalEvent.key === "a"){
       activeLayer --;
       if( activeLayer < 0 ){
@@ -135,17 +137,31 @@ map.on('keypress', function(e){
       }
       viewLayer[activeLayer].bringToFront();
   }
+  /*カラーマップのレンジ変更*/
   if(e.originalEvent.key === "r"){
-      createColormap(viewLayer[activeLayer]);
+      updateClrmapRange(viewLayer[activeLayer]);
   }
+  /*不透明度 入力&変更*/
   if(e.originalEvent.key === "t"){
       var opacity = window.prompt('不透明度');
       if(0 <= opacity && opacity <= 1){
-        viewLayer[activeLayer].options.opacity = opacity;
-        tmpOpacity = opacity;
+        viewLayer[activeLayer].options.opacity = opacity; //要注意 アクセス権限ガバガバ
+        //tmpOpacity = opacity; //不透明度強制0 On-Offを有効にするならコメント解除
       }
   }
+  /*不透明度強制0 On Off*/
+  /*
   if(e.originalEvent.key === "e"){
+      console.log(flag);
+      if(flag == 1){
+        flag = 0;
+      }else{
+        flag = 1;
+      }
+      viewLayer[activeLayer].options.opacity = tmpOpacity*flag;
+  }*/
+
+  if(e.originalEvent.key === "z"){
       console.log(flag);
       if(flag == 1){
         flag = 0;
