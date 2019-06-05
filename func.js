@@ -1,7 +1,7 @@
 /*各種関数を記述*/
 
-/*ユーザに最大・最小値を入力させる*/
-function createColormap(viewLayer){
+/*カラーマップレンジ変更*/
+function updateClrmapRange(viewLayer){
   /*var tmp_min = Math.floor( window.prompt('最小値') );
   var tmp_max = Math.ceil ( window.prompt('最大値') );*/
   var tmp_min = Number(window.prompt('最小値'));
