@@ -38,7 +38,7 @@ var dataLayer_DENS = L.gridLayer.data('dataTile/DENS/',{
 var viewLayer_U = L.gridLayer.view({
   tileSize : new L.Point(240, 240),
   dtLayerObj : dataLayer_U,
-  clrmap : colormap.gray,
+  clrmap : colormap.dcl_01,
   name: "U",
   isGrid : true
 });
@@ -62,7 +62,7 @@ var viewLayer_W = L.gridLayer.view({
 var viewLayer_PT = L.gridLayer.view({
   tileSize : new L.Point(240, 240),
   dtLayerObj : dataLayer_PT,
-  clrmap : colormap.jet,
+  clrmap : colormap.dcl_02,
   name: "PT",
   isGrid : true
 });
@@ -70,7 +70,7 @@ var viewLayer_PT = L.gridLayer.view({
 var viewLayer_DENS = L.gridLayer.view({
   tileSize : new L.Point(240, 240),
   dtLayerObj : dataLayer_DENS,
-  clrmap : colormap.jet,
+  clrmap : colormap.dcl_03,
   name: "DENS",
   isGrid : true
 });
@@ -88,9 +88,6 @@ var cross = L.crosshairs({
 
 var dataLayer = [dataLayer_U,dataLayer_V,dataLayer_W,dataLayer_PT,dataLayer_DENS];
 var viewLayer = [viewLayer_U,viewLayer_V,viewLayer_W,viewLayer_PT,viewLayer_DENS];
-
-var dataLayer = [dataLayer_DENS];
-var viewLayer = [viewLayer_DENS];
 if(dataLayer.length == viewLayer.length){
   var layerNum = dataLayer.length;
   var activeLayer = 0;
@@ -128,6 +125,13 @@ map.on('keypress', function(e){
       activeLayer ++;
       if( activeLayer >= layerNum ){
         activeLayer = 0;
+      }
+      viewLayer[activeLayer].bringToFront();
+  }
+  if(e.originalEvent.key === "a"){
+      activeLayer --;
+      if( activeLayer < 0 ){
+        activeLayer = layerNum - 1;
       }
       viewLayer[activeLayer].bringToFront();
   }

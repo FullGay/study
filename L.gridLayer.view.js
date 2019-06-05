@@ -134,7 +134,7 @@ L.GridLayer.View = L.GridLayer.extend({
         viewImgData.data[imgInx    ] = color.r;
         viewImgData.data[imgInx + 1] = color.g;
         viewImgData.data[imgInx + 2] = color.b;
-        viewImgData.data[imgInx + 3] = color.a;
+        viewImgData.data[imgInx + 3] = 255;
       }
     }
     viewCtx.putImageData(viewImgData, 0, 0);
