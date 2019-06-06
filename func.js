@@ -1,9 +1,11 @@
 /*各種関数を記述*/
 
-/*ユーザに最大・最小値を入力させる*/
-function createColormap(viewLayer){
-  var tmp_min = parseInt(window.prompt('最小値'), 10);
-  var tmp_max = parseInt(window.prompt('最大値'), 10);
+/*カラーマップレンジ変更*/
+function updateClrmapRange(viewLayer){
+  /*var tmp_min = Math.floor( window.prompt('最小値') );
+  var tmp_max = Math.ceil ( window.prompt('最大値') );*/
+  var tmp_min = Number(window.prompt('最小値'));
+  var tmp_max = Number(window.prompt('最大値'));
   if( tmp_min < tmp_max){ //不正な値・文字列が入った場合に更新しないようにする
     viewLayer.min = tmp_min;
     viewLayer.max = tmp_max;
@@ -64,6 +66,8 @@ function drawText(viewLayer){
 	//if( ! canvas || ! canvas.getContext ) { return false; }//canvas要素の存在チェックとCanvas未対応ブラウザの対処
   var ctx_text = canvas.getContext('2d');
   ctx_text.font = "bold 20px 'Arial'";
+
+  ctx_text.fillText("Active : "+viewLayer.options.name+"  (opacity : "+viewLayer.options.opacity+")",10, window.innerHeight-50);
   ctx_text.fillText("ColorRange:["+viewLayer.min+", "+viewLayer.max+"]",10, window.innerHeight-30);
 
 }
