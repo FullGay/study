@@ -9,13 +9,17 @@ function updateClrmapRange(viewLayer){
   if( tmp_min < tmp_max){ //不正な値・文字列が入った場合に更新しないようにする
     viewLayer.min = tmp_min;
     viewLayer.max = tmp_max;
+<<<<<<< HEAD
   }else{
     alert("不正値");
+=======
+>>>>>>> origin/master
   }
 }
 /*指定したレイヤの緯度経度をZ-X-Yに変換する
 引数(latitude[緯度], longitude[経度], gridlayerのインスタンス)  戻り値 引数のcoords*/
 function lonlatToCoords(lat, lon, layer){
+<<<<<<< HEAD
   var coords  = new L.Point(0, 0); //クリックされた場所のタイルcoords(z/x/y)
   var tileSize = layer.getTileSize();
   var z = layer._tileZoom;	//ズームレベル
@@ -39,6 +43,19 @@ function lonlatToCoords(lat, lon, layer){
   /*console.log(`${lat}/${dividedSize.x}`);
   console.log(coords);*/
   return coords;
+=======
+  var clCoords  = new L.Point(0, 0); //クリックされた場所のタイルcoords(z/x/y)
+  var tileSize = layer.getTileSize();
+  var z = layer._tileZoom;	//ズームレベル
+  var tlOneSide = 2 ** z; //一辺のタイル分割数
+  var tlOneSideSize = {x: tileSize.x / tlOneSide,
+                       y: tileSize.y / tlOneSide}; //一辺のタイルスケール
+  //coords計算
+  clCoords.x = lon > 0 ? parseInt( lon / tlOneSideSize.x) : parseInt( lon / tlOneSideSize.x - 1);
+  clCoords.y = lat > 0 ? parseInt(-lat / tlOneSideSize.y -1 ) : parseInt(-lat / tlOneSideSize.y);
+  clCoords.z = z;
+  return clCoords;
+>>>>>>> origin/master
 }
 /*緯度経度をタイル内座標に変換する
 引数(latitude[緯度], longitude[経度], gridlayerのインスタンス)  戻り値 タイル内座標*/
@@ -74,15 +91,19 @@ function compRGB(data, view, point, latlng){
 }
 /*諸々表示関数(仮)*/
 function drawText(viewLayer){
+<<<<<<< HEAD
   var size = {};
   size.x = 5;
   var start = {};
   start.x = 100;
+=======
+>>>>>>> origin/master
   var canvas = document.getElementById('text');
   canvas.setAttribute("width", window.innerWidth-10);//-10はスクロールバーを考慮
   canvas.setAttribute("height", window.innerHeight-10);//上と同様
 	//if( ! canvas || ! canvas.getContext ) { return false; }//canvas要素の存在チェックとCanvas未対応ブラウザの対処
   var ctx_text = canvas.getContext('2d');
+<<<<<<< HEAD
   ctx_text.font = "bold 18px 'Arial'";
 
   ctx_text.fillRect(50+10*i, 20+30, 20, 10);
@@ -126,4 +147,11 @@ window.onload = function(){
     var t = Number(window.prompt('最大値'));
     alert(t);
   });
+=======
+  ctx_text.font = "bold 20px 'Arial'";
+
+  ctx_text.fillText("Active : "+viewLayer.options.name+"  (opacity : "+viewLayer.options.opacity+")",10, window.innerHeight-50);
+  ctx_text.fillText("ColorRange:["+viewLayer.min+", "+viewLayer.max+"]",10, window.innerHeight-30);
+
+>>>>>>> origin/master
 }
