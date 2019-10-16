@@ -22,3 +22,26 @@ html, body
 	top:0px;
   bottom:70px;
 }
+#toneRange{
+  position: absolute;
+  right: 270px;
+  width: 100px
+  bottom:10px;
+}
+#colormap{
+  position: absolute;
+  right: 180px;
+  width: 90px
+  bottom:10px;
+}
+#opacity{
+  position: absolute;
+  right: 100px;
+  width: 80px
+  bottom:10px;
+}
+#change{
+  position: absolute;
+  bottom:10px;
+  right: 0px;
+}

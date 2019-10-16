@@ -12,8 +12,9 @@ var map = L.map('map',{
   //crs:L.CRS.Simple,
   maxZoom: 4,
   minZoom: 0,
-  zoom: 1,
+  zoom: 2,
 });
+
 
 var layer_PT = L.gridLayer.numData('dataTile/PT/',{
   tileSize : new L.Point(240, 240),
@@ -23,14 +24,18 @@ var layer_PT = L.gridLayer.numData('dataTile/PT/',{
   shade:   true,
   isGrid : false
 });
-/*var layer_U = L.gridLayer.numData('dataTile/V/',{
+
+
+var layer_W = L.gridLayer.numData('dataTile/W/',{
   tileSize : new L.Point(240, 240),
-  name: "U",
+  name: "W",
   operation: "",
   contour: false,
   shade:   true,
-  isGrid : false
-});*/
+  isGrid : true
+});
+
+/*
 var layer_UV = L.gridLayer.vectorNumData('dataTile/U/','dataTile/V/',{
   tileSize : new L.Point(240, 240),
   name: "U-V",
@@ -38,6 +43,7 @@ var layer_UV = L.gridLayer.vectorNumData('dataTile/U/','dataTile/V/',{
   dens : 6, //1タイル中に描く矢印の本数(1〜15のうち 7,9,11,13,14でバグることを確認)
   isGrid : false
 });
+*/
 /*クロスヘアインスタンス生成*/
 var cross = L.crosshairs({
   style: {
@@ -49,8 +55,8 @@ var cross = L.crosshairs({
   }
 });
 var layer, layerNum, activeLayer
-layer = [layer_PT, layer_UV];
-var flag = 1;  //仮フラグ 0: トーン図同士の重ね合わせ　　1:　トーン図とベクトルの重ね合わせ
+layer = [layer_PT, layer_W];
+var flag = 0;  //仮フラグ 0: トーン図同士の重ね合わせ　　1:　トーン図とベクトルの重ね合わせ
 if(flag == 0){
   layerNum = layer.length;
   activeLayer = 0;
@@ -107,6 +113,7 @@ map.on('keypress', function(e){
   /*不透明度 入力&変更*/
   if(e.originalEvent.key === "t"){
       var opacity = window.prompt('不透明度');
+
       if(0 <= opacity && opacity <= 1){
         layer[activeLayer].options.opacity = opacity; //要注意 アクセス権限ガバガバ
         //tmpOpacity = opacity; //不透明度強制0 On-Offを有効にするならコメント解除
@@ -144,3 +151,45 @@ map.on('keypress', function(e){
   }
   drawText(layer[activeLayer]);
 });
+window.onload = function(){
+  function upDate(){
+    for(var i = 0; i < layerNum; i++){
+      layer[i].redraw();
+    }
+    drawText(layer[activeLayer]);
+  }
+
+  document.getElementById("toneRange").addEventListener("click", function(){
+    updateClrmapRange(layer[activeLayer]);
+    upDate();
+  });
+
+  document.getElementById("colormap").addEventListener("click", function(){
+    var input = get2digitsNum( window.prompt('colormap') );
+    try{
+      console.log(eval( "clrmap_"+input ));
+      layer[activeLayer]._colormap = eval( "clrmap_"+input );
+    }catch{
+      console.log("無効な値が入力されました");
+    }
+    upDate();
+  });
+
+  document.getElementById("opacity").addEventListener("click", function(){
+    var opacity = window.prompt('不透明度');
+    if(0 <= opacity && opacity <= 1){
+      layer[activeLayer].options.opacity = opacity; //要注意 アクセス権限ガバガバ
+      //tmpOpacity = opacity; //不透明度強制0 On-Offを有効にするならコメント解除
+      upDate();
+    }
+  });
+
+  document.getElementById("change").addEventListener("click", function(){
+    activeLayer ++;
+    if( activeLayer >= layerNum ){
+      activeLayer = 0;
+    }
+    layer[activeLayer].bringToFront();
+    upDate();
+  });
+}

@@ -9,6 +9,8 @@ function updateClrmapRange(viewLayer){
   if( tmp_min < tmp_max){ //不正な値・文字列が入った場合に更新しないようにする
     viewLayer.min = tmp_min;
     viewLayer.max = tmp_max;
+  }else{
+    alert("不正値");
   }
 }
 /*指定したレイヤの緯度経度をZ-X-Yに変換する
@@ -72,18 +74,56 @@ function compRGB(data, view, point, latlng){
 }
 /*諸々表示関数(仮)*/
 function drawText(viewLayer){
+  var size = {};
+  size.x = 5;
+  var start = {};
+  start.x = 100;
   var canvas = document.getElementById('text');
   canvas.setAttribute("width", window.innerWidth-10);//-10はスクロールバーを考慮
   canvas.setAttribute("height", window.innerHeight-10);//上と同様
 	//if( ! canvas || ! canvas.getContext ) { return false; }//canvas要素の存在チェックとCanvas未対応ブラウザの対処
   var ctx_text = canvas.getContext('2d');
-  ctx_text.font = "bold 20px 'Arial'";
+  ctx_text.font = "bold 18px 'Arial'";
+
+  ctx_text.fillRect(50+10*i, 20+30, 20, 10);
 
   ctx_text.fillText("Active : "+viewLayer.options.name+"  (opacity : "+viewLayer.options.opacity+")",10, window.innerHeight-50);
-  ctx_text.fillText("Range:["+viewLayer.min+", "+viewLayer.max+"]",10, window.innerHeight-30);
-  console.log(viewLayer);
+  //ctx_text.fillText("Range:["+viewLayer.min+", "+viewLayer.max+"]",10, window.innerHeight-30);
+
+  //console.log(viewLayer);
+  for(var i = 0; i < viewLayer._colormap.length; i++){
+
+    if(i == 0){
+      ctx_text.fillStyle = `rgb(0, 0, 0)`;
+      ctx_text.fillText(Math.floor(viewLayer.min*100)/100,start.x - 40, window.innerHeight-25);
+    }else if(i == viewLayer._colormap.length-1){
+      ctx_text.fillStyle = `rgb(0, 0, 0)`;
+      ctx_text.fillText(Math.floor(viewLayer.max*100)/100,start.x+size.x*i, window.innerHeight-25);
+
+    }
+    ctx_text.fillStyle = `rgb(${viewLayer._colormap[i].r},${viewLayer._colormap[i].g},${viewLayer._colormap[i].b})`;
+    if(viewLayer.options.contour){
+      
+      ctx_text.fillStyle = `rgb(255, 255, 255)`;
+    }
+    ctx_text.fillRect(start.x+size.x*i, window.innerHeight-70, size.x, 30);
+  }
+
 }
 /*1->01と表示する関数*/
 function get2digitsNum(number){
   return ("0" + number).slice(-2);
+}
+/*
+document.getElementById("button").onclick = function({
+  alert("click");
+  console.log("ddd");
+}
+*/
+window.onload = function(){
+
+  document.getElementById("toneRange").addEventListener("click", function(){
+    var t = Number(window.prompt('最大値'));
+    alert(t);
+  });
 }
