@@ -7,6 +7,7 @@ L.GridLayer.NumData = L.GridLayer.extend({
     this.getInitRange(coords);
     this._colormap = clrmap_04;
     this._cnt =0;
+  //  alert(map.getZoom());
   },
   getInitRange: function(coords){
    this.max = -1000000;
@@ -229,9 +230,27 @@ L.GridLayer.NumData = L.GridLayer.extend({
     }
     return color_array;
   },
+  _drawSquare: function(rgba, div, color, i){
+    var size, rgba, y, x, idx;
+    size = this.getTileSize();
+    for(y = 0; y < div; y++){
+      for(x = 0; x < div; x++){
+        idx = 4 * (i + (y*size.x) + x)
+        rgba[idx    ] = color.r;
+        rgba[idx + 1] = color.g;
+        rgba[idx + 2] = color.b;
+        rgba[idx + 3] = 255;
+      }
+    }
+  },
   /*tileにrgbaデータを元に描画*/
-  _draw: function(tile, rgba){
+  /*tile : 描画するキャンバス */
+  /*rgba : 数値データタイルから取得したRGBA配列 (imageData.data)*/
+  /*coords : タイルのz,x,y オーバーズーム時のみ必要*/
+  _draw: function(tile, rgba, coords){
     var size, tile, num, imgData, idx;
+    var y, x, topLeft, topRight, bottomLeft, bottomRight;
+    var diff_z, div;
     size = this.getTileSize();
     ctx = tile.getContext('2d');
     imgData = ctx.getImageData(0, 0, size.x, size.y);
@@ -243,31 +262,39 @@ L.GridLayer.NumData = L.GridLayer.extend({
     }
 
     if( this.options.shade ){
+      //console.log(map.options.maxZoom+"    "+coords.z  );
       //実数値から塗りつぶす色決定しイメージデータを書き換
-      for(var i = 0; i < size.y * size.x; i++){
-         idx = i * 4;
-         color = this._getColor(num[i]); //数値に対して色を決める
-         imgData.data[idx + 3] = 255;
-         imgData.data[idx    ] = color.r;
-         imgData.data[idx + 1] = color.g;
-         imgData.data[idx + 2] = color.b;
-       }
-       if(0){
-         for(var y = 0; y < size.y; y+=2){
-           for(var x = 0; x < size.x; x+=2){
+      if(this.options.max_z >= coords.z){
+        //console.log("normal zooming");
+        for(var i = 0; i < size.y * size.x; i++){
+           idx = i * 4;
+           color = this._getColor(num[i]); //数値に対して色を決める
+           imgData.data[idx + 3] = 255;
+           imgData.data[idx    ] = color.r;
+           imgData.data[idx + 1] = color.g;
+           imgData.data[idx + 2] = color.b;
+         }
+       }else if(  this.options.max_z < coords.z  ){
+         //console.log("over zooming");
+         i = 0
+         diff_z = coords.z - this.options.max_z;
+         div =　2 ** diff_z;
+
+         for(y = 0; y < size.y; y+=div){
+           for(x = 0; x < size.x; x+=div){
+             idx = y * size.x + x;
              color = this._getColor(num[i]);
-             imgData.data[idx    ] = color.r;
-             imgData.data[idx + 4] = color.r;
-             imgData.data[idx + 1] = color.g;
-             imgData.data[idx + 2] = color.b;
+             this._drawSquare(imgData.data, div, color, idx);
+             i++;
            }
          }
        }
-
+       //console.log(imgData.data);
      }
      if( this.options.contour ){
       imgData.data = this._drawContour(num, imgData.data);
      }
+     //console.log(imgData)
      ctx.putImageData(imgData, 0, 0);
      if(this.options.isGrid){
        ctx.strokeRect(0, 0, size.x, size.y);
@@ -278,6 +305,7 @@ L.GridLayer.NumData = L.GridLayer.extend({
   createTile: function (coords) {
     var size, self;
     var tile, ctx, d_tile, d_ctx, img, num;
+    var xstart, ystart, diff_z, div;
 
     self = this;
     size = this.getTileSize();
@@ -293,12 +321,29 @@ L.GridLayer.NumData = L.GridLayer.extend({
     d_ctx = d_tile.getContext('2d');
 
     img = new Image();
-    img.src = `${this._url}${coords.z}/${coords.x}/${coords.y}.png`;
+    //console.log(map.options.maxZoom + 1+"    "+coords.z);
+    if(this.options.max_z >= coords.z ){
+      img.src = `${this._url}${coords.z}/${coords.x}/${coords.y}.png`;
+    }else if(this.options.max_z < coords.z){
+      //console.log("over");
+      diff_z = coords.z - this.options.max_z;
+      div =　2 ** diff_z;
+      img.src = `${this._url}${this.options.max_z}/${Math.floor(coords.x/div)}/${Math.floor(coords.y/div)}.png`;
+    }else{
+      console.log("画像がない");
+    }
     img.onload = function(){
       d_ctx.drawImage(img, 0, 0);
-      d_imgData = d_ctx.getImageData(0, 0, size.x, size.y);
+      if( self.options.max_z < coords.z ){ //over Zooming
+          xstart = size.x * (coords.x % div) / div
+          ystart = size.y * (coords.y % div) / div
+          //console.log(xstart+"   "+ystart+"  "+div);
+          d_imgData = d_ctx.getImageData(xstart, ystart, size.x/div, size.y/div);
+      }else{
+        d_imgData = d_ctx.getImageData(0, 0, size.x, size.y);
+      }
       rgba = d_imgData.data;
-      self._draw(tile, rgba);
+      self._draw(tile, rgba, coords);
     }
     // create a <canvas> element for drawing
     return tile;
