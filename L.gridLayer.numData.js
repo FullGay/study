@@ -37,14 +37,15 @@ L.GridLayer.NumData = L.GridLayer.extend({
        }
        //console.log(num);
        for(var i = 0; i < size.y * size.x; i++){
-         if(num[i] > self.max){
+         if(num[i] > self.max ){
            self.max = num[i];
          }
          else if(num[i] < self.min){
            self.min = num[i];
          }
       }
-      //alert(self.min);
+
+
       drawText(self);
     }
      //alert("init");
@@ -206,7 +207,10 @@ L.GridLayer.NumData = L.GridLayer.extend({
           num = self._getNumDataDiff(num);
           //console.log(mean);
         }
+        console.log(map.dragging._enabled);
+
         alert( num[0].toPrecision(5) );
+
     }
   },
   _drawContour: function(numData, color_array){
@@ -321,9 +325,21 @@ L.GridLayer.NumData = L.GridLayer.extend({
     d_ctx = d_tile.getContext('2d');
 
     img = new Image();
-    //console.log(map.options.maxZoom + 1+"    "+coords.z);
+  //  console.log(this.options.max_z +"    "+coords.z);
+　　/*以下画像の読み込み*/
     if(this.options.max_z >= coords.z ){
-      img.src = `${this._url}${coords.z}/${coords.x}/${coords.y}.png`;
+
+      if(this.cross_sect == "xy"){
+        img.src = `${this._url}${coords.z}/${coords.x}/${coords.y}.png`;
+      }else if(this.cross_sect == "xz"){
+        img.src = `${this._url}xz/${coords.z}/${coords.x}/${coords.y}.png`;
+      }else if(this.cross_sect == "yz"){
+        img.src = `${this._url}yz/${coords.z}/${coords.x}/${coords.y}.png`;
+      }else{
+        img.src = `${this._url}${coords.z}/${coords.x}/${coords.y}.png`;  // for debug
+        console.log("変数cross_sectの値が不正")
+      }
+
     }else if(this.options.max_z < coords.z){
       //console.log("over");
       diff_z = coords.z - this.options.max_z;
