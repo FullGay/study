@@ -1,9 +1,15 @@
 L.GridLayer.NumDataGroup = L.GridLayer.extend({
   initialize: function(url, options){
-    this._url = url;
+    this.base_url = url;
+    this.cross_sect = 0;
+    this.setURL(this.cross_sect);
     L.Util.setOptions(this, options);
+
+    //Z=0のタイル座標の生成
     var coords  = new L.Point(0, 0);
     coords.z = 0;
+
+    //インスタンス変数定義
     this.H = ["h01000","h02000","h03000","h04000","h05000"];
     this.T = ["1405","1410","1415","1420","1425","1430",
               "1435","1440","1445","1450","1455","1500"];
@@ -12,7 +18,6 @@ L.GridLayer.NumDataGroup = L.GridLayer.extend({
     this.getInitRange(coords);
     this._colormap = clrmap_04;
     this._cnt =0;
-
   },
   getInitRange: function(coords){
    this.max = -1000000;
@@ -28,7 +33,7 @@ L.GridLayer.NumDataGroup = L.GridLayer.extend({
    canvas.setAttribute('height', size.y);
    ctx = canvas.getContext('2d');
    var img = new Image();
-   img.src = `${this._url}${this.T[this.activeT]}/${this.H[this.activeH]}/${coords.z}/${coords.x}/${coords.y}.png`;
+   img.src = `${this._url}/${this.T[this.activeT]}/${this.H[this.activeH]}/${coords.z}/${coords.x}/${coords.y}.png`;
 
    img.onload = function(){
        ctx.drawImage(img, 0, 0);
@@ -53,6 +58,15 @@ L.GridLayer.NumDataGroup = L.GridLayer.extend({
       drawText(self);
     }
      //alert("init");
+  },
+  setURL : function(cross_sect){
+    if(cross_sect == 0){
+      this._url = this.base_url+""
+    }else if(cross_sect == 1){
+      this._url = this.base_url+""
+    }else if(cross_sect == 2){
+      this._url = this.base_url+""
+    }
   },
   switchLayer : function(dim, num){
     if(dim == "h"){
@@ -220,7 +234,7 @@ L.GridLayer.NumDataGroup = L.GridLayer.extend({
     canvas.setAttribute('height', size.y);
     ctx = canvas.getContext('2d');
     var img = new Image();
-    img.src = `${this._url}${this.T[this.activeT]}/${this.H[this.activeH]}/${coords.z}/${coords.x}/${coords.y}.png`;
+    img.src = `${this._url}/${this.T[this.activeT]}/${this.H[this.activeH]}/${coords.z}/${coords.x}/${coords.y}.png`;
     img.onload = function(){
         ctx.drawImage(img, 0, 0);
         imgData = ctx.getImageData(point.x, point.y, 1, 1);
@@ -350,12 +364,12 @@ L.GridLayer.NumDataGroup = L.GridLayer.extend({
     img = new Image();
     //console.log(map.options.maxZoom + 1+"    "+coords.z);
     if(this.options.max_z >= coords.z ){
-      img.src = `${this._url}${this.T[this.activeT]}/${this.H[this.activeH]}/${coords.z}/${coords.x}/${coords.y}.png`;
+      img.src = `${this._url}/${this.T[this.activeT]}/${this.H[this.activeH]}/${coords.z}/${coords.x}/${coords.y}.png`;
     }else if(this.options.max_z < coords.z){
       //console.log("over");
       diff_z = coords.z - this.options.max_z;
       div =　2 ** diff_z;
-      img.src = `${this._url}${this.options.max_z}/${Math.floor(coords.x/div)}/${Math.floor(coords.y/div)}.png`;
+      img.src = `${this._url}/${this.options.max_z}/${Math.floor(coords.x/div)}/${Math.floor(coords.y/div)}.png`;
     }else{
       console.log("画像がない");
     }

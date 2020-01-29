@@ -337,7 +337,7 @@ L.GridLayer.NumData = L.GridLayer.extend({
         img.src = `${this._url}yz/${coords.z}/${coords.x}/${coords.y}.png`;
       }else{
         img.src = `${this._url}${coords.z}/${coords.x}/${coords.y}.png`;  // for debug
-        console.log("変数cross_sectの値が不正")
+        //console.log("変数cross_sectの値が不正")
       }
 
     }else if(this.options.max_z < coords.z){
