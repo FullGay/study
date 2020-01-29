@@ -1,5 +1,5 @@
 $(function() {
-  $( "#slider" ).slider({
+  $( "#slider_h" ).slider({
     value:0,
     min:0,
     max:4,

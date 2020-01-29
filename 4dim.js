@@ -16,7 +16,7 @@ var map = L.map('map',{
 });
 
 //layer_1405[i] =
-var layer_PT = L.gridLayer.numDataGroup('4dimImg/',{
+var layer_PT = L.gridLayer.numDataGroup('4dimImg',{
   tileSize : new L.Point(256, 256),
   name: "PT",
   operation: "",
@@ -61,12 +61,12 @@ map.on('keypress', function(e){
   /*アクティブレイヤ切り替え*/
   if(e.originalEvent.key === "w"){
     active = layer_PT.switchLayer("h", 1);
-    layer_PT.redraw();
+    //layer_PT.redraw();
     $("#slider").slider("value", active);
   }
   if(e.originalEvent.key === "s"){
     active = layer_PT.switchLayer("h", -1);
-    layer_PT.redraw();
+    //layer_PT.redraw();
     $("#slider").slider("value", active);
   }
 
@@ -87,10 +87,21 @@ map.on('keypress', function(e){
     play = 0;
   }
 
+  /*断面切り替え*/
+  if(e.originalEvent.key === "1"){
+    layer_PT.setURL(0);
+  }
+  if(e.originalEvent.key === "2"){
+    layer_PT.setURL(1);
+  }
+  if(e.originalEvent.key === "3"){
+    layer_PT.setURL(2);
+  }
+
   /*カラーマップの範囲設定*/
   if(e.originalEvent.key === "r"){
       updateClrmapRange(layer_PT);
-      layer_PT.redraw();
+      //layer_PT.redraw();
   }
 
   if(e.originalEvent.key === "c"){
@@ -101,8 +112,8 @@ map.on('keypress', function(e){
       }catch{
         console.log("無効な値が入力されました");
       }
-      layer_PT.redraw();
+      //layer_PT.redraw();
   }
-
+  layer_PT.redraw();
   drawText(layer_PT);
 });
