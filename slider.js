@@ -6,9 +6,11 @@ $(function() {
     step:1,
     range:"min",
     change: function (e, ui) {
-      layer_PT.activeH = ui.value;
-      layer_PT.redraw();
-      drawText(layer_PT);
+      layergroup.getActiveLayer().activeZ = ui.value;
+      //layergroup.getActiveLayer().setURL();
+      layergroup.getActiveLayer().redraw();
+
+      drawText(layergroup.getActiveLayer());
 
     }
   });

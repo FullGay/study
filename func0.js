@@ -102,7 +102,6 @@ function getGoodPlace_Y(delta_y_axis){
 }
 //諸々表示関数(仮)
 function drawText(viewLayer){
-console.log(viewLayer.min);
 
   var size = {};
   size.x = 5;
@@ -117,9 +116,9 @@ console.log(viewLayer.min);
   var ctx = canvas.getContext('2d');
   ctx.font = "bold 16px 'Arial'";
 
+//  console.log(viewLayer);
 
-
-  ctx.fillText("Active : "+viewLayer.options.name+"  (opacity : "+viewLayer.options.opacity+")", 200, window.innerHeight-20);
+  ctx.fillText("Active : "+viewLayer.options.id+"  (opacity : "+viewLayer.options.opacity+")", 200, window.innerHeight-20);
 //HとTのパラメータ表示
   //ctx.fillText(layer_PT.H[layer_PT.activeH],580, window.innerHeight-50);
   //ctx.fillText(layer_PT.T[layer_PT.activeT],600, window.innerHeight-20);
