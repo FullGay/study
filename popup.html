@@ -2,54 +2,52 @@
 <html lang="ja">
 
 <head>
-  <meta charset="UTF-8">
-  <title>main</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="design.css">
-  <link rel="stylesheet" href="https://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" type="text/css"><!--JQueryUI.css for slider-->
-  <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"></script>
-  <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script> <!--JQuery for slider-->
-  <script src="https://code.jquery.com/ui/1.9.2/jquery-ui.js"></script> <!--JQueryUI.js for slider-->
-  <script src="colormap.js"></script>
-  <script src="https://frogcat.github.io/canvas-arrow/canvas-arrow.js"></script>
-  <script src="L.gridLayer.numData.js"></script>
-  <script src="L.gridLayer.numDataGroup.js"></script>
-  <script src="L.gridLayer.vectorNumData.js"></script>
-  <script src="func0.js"></script>
-  <script src="dialog.js"></script>
-  <script src="toolbar_ctl.js"></script>
-  <script src="slider.js"></script>
-  <script src="L.LayerCtl.js"></script>
+<meta charset="UTF-8">
+<title>dropdown menu sample</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" />
+<link rel="stylesheet" href="design.css">
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" type="text/css"><!--JQueryUI.css for slider-->
+<script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"></script>
+<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script> <!--JQuery for slider-->
+<script src="https://code.jquery.com/ui/1.9.2/jquery-ui.js"></script> <!--JQueryUI.js for slider-->
+<script src="colormap.js"></script>
+<script src="https://frogcat.github.io/canvas-arrow/canvas-arrow.js"></script>
+<script src="L.gridLayer.numData.js"></script>
+<script src="L.gridLayer.vectorNumData.js"></script>
+<script src="func0.js"></script>
+<script src="dialog.js"></script>
+<script src="toolbar_ctl.js"></script>
 </head>
+
 <body>
   <!-- ////////   dropdown menu  ///////// -->
   <ul class="dropdwn">
     <li>HOME</li>
-    <li id="menu_a">トーン関連
+    <li id="menu_a">A
         <ul class="dropdwn_menu">
-            <li><a id="lnk_set_opacity" href="javascript:void(0);">不透明度</a></li>
-            <li><a id="link02" href="javascript:void(0);">トーンの範囲</a></li>
+            <li><a id="link01" href="javascript:void(0);">保留</a></li>
+            <li><a id="link02" href="javascript:void(0);">tone range</a></li>
         </ul>
     </li>
-    <li id="menu_b">カラーマップ関連
+    <li id="menu_b">B
         <ul class="dropdwn_menu">
             <li><a id="lnk_ch_clrmap" href="javascript:void(0);">カラーマップ</a></li>
             <li><a href="#">B2</a></li>
             <li><a href="#">B3</a></li>
         </ul>
     </li>
-    <li id="menu_c">断面切り替え
+    <li id="menu_c">C
         <ul class="dropdwn_menu">
-            <li><a id="lnk_ch_cross_sect" href="javascript:void(0);">断面切り替え</a></li>
+            <li><a href="#">C1</a></li>
             <li><a href="#">C2</a></li>
             <li><a href="#">C3</a></li>
             <li><a href="#">C4</a></li>
         </ul>
     </li>
-    <li id="menu_d">図
+    <li id="menu_d">D
         <ul class="dropdwn_menu">
-            <li><a id="lnk_img_type" href="javascript:void(0);">図の切り替え</a></li>
-            <li><a id="lnk_is_grid" href="javascript:void(0);">グリッド表示</a></li>
+            <li><a href="#">D1</a></li>
+            <li><a href="#">D2</a></li>
             <li><a href="#">D3</a></li>
             <li><a href="#">D4</a></li>
             <li><a href="#">D5</a></li>
@@ -59,7 +57,7 @@
   <!-- ///////end of dropdown menu//////// -->
 
   <!-- ////////  dialog content  ///////// -->
-  <div id = "dialog_content">
+  <div id = dialog_content>
     <div id="div1">
       <p>メッセージ</p>
     </div>
@@ -150,45 +148,24 @@
         <option value="70">70</option>
       </select>
     </div>
-
-    <div id="dlg_set_opacity">
-       不透明度<input type="text" id="opacity" size="5" maxlength="5"><br>
-    </div>
-
-    <div id = "dlg_ch_cross_sect">
-      <select name="clrmap" id="select_cross_sect">
-        <option value="0" selected>X-Y断面</option>
-        <option value="1">X-Z断面</option>
-        <option value="2">Z-Y断面</option>
-      </select>
-    </div>
-
-    <div id="dlg_img_type">
-      <input type="checkbox" id="check_tone" value="1" checked="checked">トーン
-      <input type="checkbox" id="check_countour" value="2">コンター
-    </div>
-
-    <div id="dlg_is_grid">
-      <input type="checkbox" id="check_is_grid" value="1">グリッド表示
-    </div>
   </div>
   <!-- ///////end of dropdown menu//////// -->
 
 
-  <button id="play_h" class="play">play</button>
-  <button id="play_t" class="play">play</button>
 
+<span id="toolbar" class="ui-widget-header ui-corner-all">
+  <button id="play">play</button>
+</span>
 
 
   <!-- //////////Leaflet related////////// -->
-  <canvas id="text" width="300" height="100"></canvas>
-  <div id="map"></div>
-  <script src="4dim.js"></script>
-  <span id = "slider_parent">
+  <div id = "leaflet_related">
+    <canvas id="text" width="300" height="100"></canvas>
+    <div id="map"></div>
+    <script src="tone.js"></script>
+    <script src="dialog.js"></script>
 
-    <div id="slider_h"></div>
-    <div id="slider_t" style="margin-top: 10px"></div>
-  </span>
+  </div>
   <!-- ///////end of Leaflet related////// -->
 </body>
 </html>

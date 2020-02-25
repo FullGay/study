@@ -1,7 +1,32 @@
 L.GridLayer.NumDataGroup = L.GridLayer.extend({
+  /*インスタンス変数*/
+  // _imgRootDir : 数値データタイルが格納されるディレクトリツリーのトップ
+  // cross_sect  : アクティブな断面 0=xy 1=xz 2=yz
+  // T
+  // Z
+  // Y
+  // X
+  // activeT
+  // activeZ
+  // activeY
+  // activeX
+  // URL : タイルのURL
   initialize: function(url, options){
-    this.base_url = url;
-    this.cross_sect = 0;
+    //インスタンス変数定義
+    this.T = ["t1200"];
+    //this.T = ["1405","1410","1415","1420","1425","1430",
+    //          "1435","1440","1445","1450","1455","1500"];
+    this.Z = ["z01000"];
+    //this.Z = ["h01000","h02000","h03000","h04000","h05000"];
+    this.X = ["x00005"];
+    this.Y = ["y00005"];
+    this.activeT = 0;
+    this.activeZ = 0;
+    this.activeY = 0;
+    this.activeX = 0;
+    this._imgRootDir = url;
+    this.cross_sect=0;
+
     this.setURL(this.cross_sect);
     L.Util.setOptions(this, options);
 
@@ -10,14 +35,9 @@ L.GridLayer.NumDataGroup = L.GridLayer.extend({
     coords.z = 0;
 
     //インスタンス変数定義
-    this.H = ["h01000","h02000","h03000","h04000","h05000"];
-    this.T = ["1405","1410","1415","1420","1425","1430",
-              "1435","1440","1445","1450","1455","1500"];
-    this.activeH = 0;
-    this.activeT = 0;
     this.getInitRange(coords);
     this._colormap = clrmap_04;
-    this._cnt =0;
+    this._cnt = 0;
   },
   getInitRange: function(coords){
    this.max = -1000000;
@@ -26,14 +46,14 @@ L.GridLayer.NumDataGroup = L.GridLayer.extend({
    var imgData, rgba, num = [];
    var size, self, canvas, ctx, imgData, rgba, pxNum;
    var mean;
-   size = this.getTileSize();
+   size = this.getTileSize(this.cross_sect);
    self = this;
    canvas = document.createElement('canvas');
    canvas.setAttribute('width', size.x); //canvasの大きさ定義
    canvas.setAttribute('height', size.y);
    ctx = canvas.getContext('2d');
    var img = new Image();
-   img.src = `${this._url}/${this.T[this.activeT]}/${this.H[this.activeH]}/${coords.z}/${coords.x}/${coords.y}.png`;
+   img.src = `${this._url}/${coords.z}/${coords.x}/${coords.y}.png`;
 
    img.onload = function(){
        ctx.drawImage(img, 0, 0);
@@ -59,22 +79,40 @@ L.GridLayer.NumDataGroup = L.GridLayer.extend({
     }
      //alert("init");
   },
-  setURL : function(cross_sect){
+  getTileSize: function () {
+    if(this.cross_sect == 0){
+      var s = this.options.tileSizeXY;
+    }else if(this.cross_sect == 1){
+      var s = this.options.tileSizeXZ;
+    }else if(this.cross_sect == 2){
+      var s = this.options.tileSizeZY;
+    }else{
+      var s = this.options.tileSize;
+    }
+    if(s instanceof L.Point){;
+      return s;
+    }else{
+      return new L.Point(s, s);
+    }
+	},
+  setURL : function(cross_sect){  /*public*/
+    this.cross_sect = cross_sect;
     if(cross_sect == 0){
-      this._url = this.base_url+""
+      //this._url = this.base_url+"/xy"
+      this._url = `${this._imgRootDir}/${this.T[this.activeT]}/${this.Z[this.activeZ]}`
     }else if(cross_sect == 1){
-      this._url = this.base_url+""
+      this._url = `${this._imgRootDir}/${this.T[this.activeT]}/${this.Y[this.activeY]}`
     }else if(cross_sect == 2){
-      this._url = this.base_url+""
+      this._url = `${this._imgRootDir}/${this.T[this.activeT]}/${this.X[this.activeX]}`
     }
   },
   switchLayer : function(dim, num){
     if(dim == "h"){
-      this.activeH += num;
-      if(this.activeH < 0){
-        this.activeH = this.H.length-1;
-      }else if(this.activeH >=  this.H.length){
-        this.activeH = 0;
+      this.activeZ += num;
+      if(this.activeZ < 0){
+        this.activeZ = this.Z.length-1;
+      }else if(this.activeZ >=  this.Z.length){
+        this.activeZ = 0;
       }
       return this.activeH;
     }else if(dim == "t"){
@@ -90,7 +128,7 @@ L.GridLayer.NumDataGroup = L.GridLayer.extend({
   _getMean : function(num){
     //var mean = [];
     var i,x,y,size;
-    size = this.getTileSize();
+    size = this.getTileSize(this.cross_sect);
 
     if(this.options.operation == "eddy"){
       this._mean = 0;
@@ -133,7 +171,7 @@ L.GridLayer.NumDataGroup = L.GridLayer.extend({
   },
   _getNumDataDiff : function(num){
     var size, i;
-    size = this.getTileSize();
+    size = this.getTileSize(this.cross_sect);
     //console.log(this._mean);
     //console.log(num);
     for(var i = 0; i < size.y * size.x; i++){
@@ -159,7 +197,7 @@ L.GridLayer.NumDataGroup = L.GridLayer.extend({
     }
   },
   _getNumData: function(rgba){
-    var tileSize = this.getTileSize();
+    var tileSize = this.getTileSize(this.cross_sect);
     var numData = [];
     var idx;
     var r,g,b;
@@ -206,7 +244,7 @@ L.GridLayer.NumDataGroup = L.GridLayer.extend({
      var tile, size, ctx, num;
      tile = L.DomUtil.create('canvas', 'leaflet-tile');
      // setup tile width and height according to the options
-     size = this.getTileSize();
+     size = this.getTileSize(this.cross_sect);
      tile.width = size.x;
      tile.height = size.y;
      ctx = tile.getContext('2d');
@@ -227,14 +265,14 @@ L.GridLayer.NumDataGroup = L.GridLayer.extend({
   getNum: function(coords, point){
     var imgData, rgba, num;
     var size, self, canvas, ctx, imgData, rgba, pxNum;
-    size = this.getTileSize();
+    size = this.getTileSize(this.cross_sect);
     self = this;
     canvas = document.createElement('canvas');
     canvas.setAttribute('width', size.x); //canvasの大きさ定義
     canvas.setAttribute('height', size.y);
     ctx = canvas.getContext('2d');
     var img = new Image();
-    img.src = `${this._url}/${this.T[this.activeT]}/${this.H[this.activeH]}/${coords.z}/${coords.x}/${coords.y}.png`;
+    img.src = `${this._url}/${coords.z}/${coords.x}/${coords.y}.png`;
     img.onload = function(){
         ctx.drawImage(img, 0, 0);
         imgData = ctx.getImageData(point.x, point.y, 1, 1);
@@ -251,7 +289,7 @@ L.GridLayer.NumDataGroup = L.GridLayer.extend({
     }
   },
   _drawContour: function(numData, color_array){
-    var tileSize = this.getTileSize();
+    var tileSize = this.getTileSize(this.cross_sect);
     var idx;
     var numData_sub = [];
     for(var i = 0; i < tileSize.y * tileSize.x; i++){
@@ -273,7 +311,7 @@ L.GridLayer.NumDataGroup = L.GridLayer.extend({
   },
   _drawSquare: function(rgba, div, color, i){
     var size, rgba, y, x, idx;
-    size = this.getTileSize();
+    size = this.getTileSize(this.cross_sect);
     for(y = 0; y < div; y++){
       for(x = 0; x < div; x++){
         idx = 4 * (i + (y*size.x) + x)
@@ -292,7 +330,7 @@ L.GridLayer.NumDataGroup = L.GridLayer.extend({
     var size, tile, num, imgData, idx;
     var y, x, topLeft, topRight, bottomLeft, bottomRight;
     var diff_z, div;
-    size = this.getTileSize();
+    size = this.getTileSize(this.cross_sect);
     ctx = tile.getContext('2d');
     imgData = ctx.getImageData(0, 0, size.x, size.y);
 
@@ -341,6 +379,16 @@ L.GridLayer.NumDataGroup = L.GridLayer.extend({
        ctx.strokeRect(0, 0, size.x, size.y);
      }
   },
+  setImgType: function(s_flag, c_flag){
+    this.options.shade = s_flag;
+    this.options.contour = c_flag;
+    this.redraw();
+  },
+
+  setIsGrid: function(flag){
+    this.options.isGrid = flag;
+    this.redraw();
+  },
 
   /*タイル生成*/
   createTile: function (coords) {
@@ -349,7 +397,7 @@ L.GridLayer.NumDataGroup = L.GridLayer.extend({
     var xstart, ystart, diff_z, div;
 
     self = this;
-    size = this.getTileSize();
+    size = this.getTileSize(this.cross_sect);
 
     tile = L.DomUtil.create('canvas', 'leaflet-tile');
     tile.width = size.x;
@@ -363,16 +411,19 @@ L.GridLayer.NumDataGroup = L.GridLayer.extend({
 
     img = new Image();
     //console.log(map.options.maxZoom + 1+"    "+coords.z);
-    if(this.options.max_z >= coords.z ){
-      img.src = `${this._url}/${this.T[this.activeT]}/${this.H[this.activeH]}/${coords.z}/${coords.x}/${coords.y}.png`;
+    /*if(this.options.max_z >= coords.z ){
+      img.src = `${this._url}/${coords.z}/${coords.x}/${coords.y}.png`;
     }else if(this.options.max_z < coords.z){
       //console.log("over");
       diff_z = coords.z - this.options.max_z;
       div =　2 ** diff_z;
-      img.src = `${this._url}/${this.options.max_z}/${Math.floor(coords.x/div)}/${Math.floor(coords.y/div)}.png`;
+      img.src = `${this._url}/${coords.z}/${coords.x}/${coords.y}.png`;
     }else{
       console.log("画像がない");
-    }
+    }*/
+    //img.src = `${this._imgRootDir}/${this.T[this.activeT]}/${this.Z[this.activeZ]}/${coords.z}/${coords.x}/${coords.y}.png`;
+    img.src = `${this._url}/${coords.z}/${coords.x}/${coords.y}.png`;
+    //console.log(img.src);
     img.onload = function(){
       d_ctx.drawImage(img, 0, 0);
       if( self.options.max_z < coords.z ){ //over Zooming

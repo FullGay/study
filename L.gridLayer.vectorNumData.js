@@ -8,6 +8,8 @@ L.GridLayer.VectorNumData = L.GridLayer.extend({
     coords.z = 0;
     //this.getInitRange(coords);
   },
+  getInitRange: function(coords){
+  },
   /*
   getInitRange: function(coords){
    this.max = -1000000;
@@ -187,6 +189,22 @@ L.GridLayer.VectorNumData = L.GridLayer.extend({
   Loader: function(expectedCnt, callback){
     var cnt = 0;
     return function(){if(++cnt == expectedCnt){ callback(); }}
+  },
+  setURL : function(cross_sect){  /*public*/
+    this.cross_sect = cross_sect;
+  /*  if(cross_sect == 0){
+      for(var i = 0; i < 2; i++){
+        this._url[i] = `${this._url[i]}/${this.T[this.activeT]}/${this.Z[this.activeZ]}`;
+      }
+    }else if(cross_sect == 1){
+      for(var i = 0; i < 2; i++){
+        this._url = `${this._imgRootDir}/${this.T[this.activeT]}/${this.Y[this.activeY]}`;
+      }
+    }else if(cross_sect == 2){
+      for(var i = 0; i < 2; i++){
+        this._url = `${this._imgRootDir}/${this.T[this.activeT]}/${this.X[this.activeX]}`;
+      }
+    }*/
   },
 
   /*タイル生成*/
